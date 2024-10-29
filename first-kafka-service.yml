@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: first-kafka-service
+  cloud:
+    config:
+      uri: http://config-server:8888  # config-server - from docker-compose
+    stream:
+      kafka:
+        binder:
+          brokers: kafka:9092  # address - from docker-compose
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/  # address Eureka Server - from docker-compose
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+logging:
+  level:
+    root: INFO
+
+kafka:
+  topic:
+    myTopic: primary-topic  # any name, myTopic/primary-topic just for test reasons
