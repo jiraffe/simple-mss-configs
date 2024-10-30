@@ -1,0 +1,44 @@
+server:
+    port: 8082  # Порт для kafka-consumer
+
+spring:
+    config:
+        import: optional:configserver:http://config-server:8888
+    profiles:
+        active: dev
+    application:
+        name: kafka-consumer
+    kafka:
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        consumer:
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            properties:
+                spring.json.trusted.packages: "*"
+    cloud:
+        name: kafka-consumer  # Имя конфигурационного файла, который будет запрашиваться из репозитория Config Server
+        stream:
+            kafka:
+                binder:
+                    brokers: kafka:9092  # Адрес Kafka-брокера
+                    default-broker-port: 9092
+                    zkNodes: zookeeper:2181
+                bindings:
+                    output:  # Канал вывода сообщений для консюмера
+                        destination: userfetch  # Топик, в который kafka-consumer будет отправлять сообщения
+                        contentType: application/json
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://eureka-server:8761/eureka/  # Адрес Eureka Server
+    instance:
+        prefer-ip-address: true
+        lease-renewal-interval-in-seconds: 10
+        lease-expiration-duration-in-seconds: 30
+
+logging:
+    level:
+        root: INFO  # Уровень логирования
