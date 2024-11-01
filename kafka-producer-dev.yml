@@ -2,12 +2,17 @@ server:
   port: 8081
 
 spring:
-  application:
-    name: kafka-producer
-  cloud:
     config:
-      uri: http://localhost:8888  
       name: kafka-producer 
+    kafka:
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      consumer:
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+        properties:
+          spring.json.trusted.packages: "*"
     stream:
       kafka:
         binder:
